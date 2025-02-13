@@ -1,6 +1,5 @@
-# HBnB Technical Documentation
 ![UML_logo svg](https://github.com/user-attachments/assets/167c4efe-eea9-474f-b80d-d67a6a9642e3)
-
+# HBnB Technical Documentation
 - [Introduction](#Introduction)
 - [Purpose and Scope](#Purpose-and-Scope)
 - [High-Level Architecture](#High-Level-Architecture)
