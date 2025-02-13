@@ -14,7 +14,7 @@
 - [Security Considerations](#Security-Considerations)
 - [Error Handling](#Error-Handling)
 - [Conclusion](#Conclusion)
-- [Authors](##Authors)
+- [Authors](#Authors)
 ## Introduction
 
 This technical document serves as the comprehensive blueprint for the HBnB project implementation. It provides detailed architectural insights, design patterns, and interaction flows that will guide the development process. The document aims to establish a clear understanding of the system's structure and behavior for all stakeholders involved in the project.
