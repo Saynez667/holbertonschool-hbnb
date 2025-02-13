@@ -1,6 +1,6 @@
 ![Sans titre](https://github.com/user-attachments/assets/96cdaac1-87b5-44a7-9e0c-2f4350b3afd1)
 
-# HBnB Technical Documentation 📝📖
+# HBnB Technical Documentation 📖
 - [Introduction](#Introduction)
 - [Purpose and Scope](#Purpose-and-Scope)
 - [High-Level Architecture](#High-Level-Architecture)
