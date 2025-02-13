@@ -91,3 +91,4 @@ For any clarifications or updates to this documentation, please contact the tech
 ## Authors 🎓
 - [Saynez667](https://github.com/Saynez667)
 - [jbn179](https://github.com/jbn179)
+- [MINS2405](https://github.com/MINS2405)
