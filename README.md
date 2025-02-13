@@ -1,20 +1,20 @@
 ![Sans titre](https://github.com/user-attachments/assets/96cdaac1-87b5-44a7-9e0c-2f4350b3afd1)
 
 # HBnB Technical Documentation 📖
-- [Introduction](#Introduction)
-- [Purpose and Scope](#Purpose-and-Scope)
-- [High-Level Architecture](#High-Level-Architecture)
-- [Package Organization](#Package-Organization)
-- [Business Logic Layer](#Business-Logic-Layer)
-- [Class Structure](#Class-Structure)
+- [Introduction](#Introduction-)
+- [Purpose and Scope](#Purpose-and-Scope-)
+- [High-Level Architecture](#High-Level-Architecture-)
+- [Package Organization](#Package-Organization-)
+- [Business Logic Layer](#Business-Logic-Layer-)
+- [Class Structure](#Class-Structure-)
 - [API Interaction Flow](#API-Interaction-Flow)
-- [Booking Creation Sequence](#Booking-Creation-Sequence)
-- [Property Listing Sequence](#Property-Listing-Sequence)
+- [Booking Creation Sequence](#Booking-Creation-Sequence-)
+- [Property Listing Sequence](#Property-Listing-Sequence-)
 - [Implementation Guidelines](#Implementation-Guidelines)
 - [Security Considerations](#Security-Considerations-)
-- [Error Handling](#Error-Handling)
-- [Conclusion](#Conclusion)
-- [Authors](#Authors)
+- [Error Handling](#Error-Handling-)
+- [Conclusion](#Conclusion-)
+- [Authors](#Authors-)
 ## Introduction 📘
 
 This technical document serves as the comprehensive blueprint for the HBnB project implementation. It provides detailed architectural insights, design patterns, and interaction flows that will guide the development process. The document aims to establish a clear understanding of the system's structure and behavior for all stakeholders involved in the project.
