@@ -4,7 +4,7 @@
 - [Introduction](#Introduction-)
 - [Purpose and Scope](#Purpose-and-Scope-)
 - [High-Level Architecture](#High-Level-Architecture-%EF%B8%8F)
-- [Package Organization](#Package-Organization-)
+- [Package Organization](#Package-Organization)
 - [Business Logic Layer](#Business-Logic-Layer)
 - [Class Structure](#Class-Structure-)
 - [API Interaction Flow](#API-Interaction-Flow)
