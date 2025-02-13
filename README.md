@@ -11,7 +11,7 @@
 - [Booking Creation Sequence](#Booking-Creation-Sequence)
 - [Property Listing Sequence](#Property-Listing-Sequence)
 - [Implementation Guidelines](#Implementation-Guidelines)
-- [Security Considerations](#Security-Considerations)
+- [Security Considerations](#Security-Considerations-)
 - [Error Handling](#Error-Handling)
 - [Conclusion](#Conclusion)
 - [Authors](#Authors)
