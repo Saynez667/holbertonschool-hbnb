@@ -26,7 +26,7 @@ This documentation encompasses the complete technical architecture of the HBnB s
 ## High-Level Architecture ⚙️
 
 ### Package Organization
-
+![high-level_package_diagram](https://github.com/user-attachments/assets/b12fe201-ed80-48b1-9c8e-2ee18d0ca15b)
 
 The HBnB system follows a layered architecture pattern with clear separation of concerns:
 
@@ -40,7 +40,7 @@ The facade pattern in the API layer provides a simplified interface to the compl
 ## Business Logic Layer
 
 ### Class Structure 📂
-
+![class_diagram_for_business_logic_layer](https://github.com/user-attachments/assets/1ff40f8c-a513-449b-820e-7eb224679cbd)
 
 The Business Logic Layer implements the core domain models and their relationships:
 
@@ -53,6 +53,7 @@ The Business Logic Layer implements the core domain models and their relationshi
 
 ### Booking Creation Sequence 🧠
 
+![sequence_diagram_-_fetching_places_list_flow](https://github.com/user-attachments/assets/6328a110-99b7-4e60-8b74-140094d01dcf)
 
 The booking creation flow demonstrates the interaction between various system components:
 
