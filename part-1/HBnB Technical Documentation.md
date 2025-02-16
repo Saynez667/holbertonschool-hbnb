@@ -1,30 +1,30 @@
 ![image-entete](img/entete.webp)
-# HBnB Technical Documentation
-- [HBnB Technical Documentation](#hbnb-technical-documentation)
-  - [Introduction](#introduction)
-  - [General Architecture](#general-architecture)
-    - [Layered Architecture Overview](#layered-architecture-overview)
-    - [Key Components](#key-components)
-  - [Domain Models](#domain-models)
-    - [Class Structure](#class-structure)
-      - [Core Entities](#core-entities)
-  - [API Interaction Flows](#api-interaction-flows)
-    - [User Registration](#user-registration)
-    - [Place Creation](#place-creation)
-    - [Review Submission](#review-submission)
-    - [Fetching Places List](#fetching-places-list)
-  - [Technical Considerations](#technical-considerations)
-    - [Security](#security)
-    - [Error Handling](#error-handling)
-    - [Performance](#performance)
-  - [Implementation Notes](#implementation-notes)
-    - [Authentication Flow](#authentication-flow)
-    - [Data Validation Strategy](#data-validation-strategy)
-    - [API Design Principles](#api-design-principles)
-  - [Conclusion](#conclusion)
-  - [Authors](#authors)
+# HBnB Technical Documentation 📄
+- [HBnB Technical Documentation 📄](#hbnb-technical-documentation-)
+  - [Introduction 🌟](#introduction-)
+  - [General Architecture 🏗️](#general-architecture-️)
+    - [Layered Architecture Overview 🧩](#layered-architecture-overview-)
+    - [Key Components 🔑](#key-components-)
+  - [Domain Models 📊](#domain-models-)
+    - [Class Structure 🏷️](#class-structure-️)
+      - [Core Entities 🌐](#core-entities-)
+  - [API Interaction Flows 🔄](#api-interaction-flows-)
+    - [User Registration 📝](#user-registration-)
+    - [Place Creation 🏠](#place-creation-)
+    - [Review Submission 📝](#review-submission-)
+    - [Fetching Places List 📋](#fetching-places-list-)
+  - [Technical Considerations ⚙️](#technical-considerations-️)
+    - [Security 🔒](#security-)
+    - [Error Handling ❗](#error-handling-)
+    - [Performance 🚀](#performance-)
+  - [Implementation Notes 📝](#implementation-notes-)
+    - [Authentication Flow 🔑](#authentication-flow-)
+    - [Data Validation Strategy ✅](#data-validation-strategy-)
+    - [API Design Principles 📐](#api-design-principles-)
+  - [Conclusion 🏁](#conclusion-)
+  - [Authors ✍️](#authors-️)
 
-## Introduction
+## Introduction 🌟
 
 This technical document details the architecture and design of the HBnB (Holberton Bed and Breakfast) project, a lodging reservation platform. 
 
@@ -32,9 +32,9 @@ This documentation serves as a comprehensive guide for system implementation and
 
 The HBnB project is designed using a modern layered architecture, implementing robust design patterns to ensure maintainability, scalability, and separation of concerns.
 
-## General Architecture
+## General Architecture 🏗️
 ![package-diagram](<img/High-Level Package Diagram.png>)
-### Layered Architecture Overview
+### Layered Architecture Overview 🧩
 
 The application is structured in three main layers:
 
@@ -47,7 +47,7 @@ The architecture employs the Facade pattern at multiple levels to decouple diffe
 - BusinessFacade: Business operations orchestration
 - StorageFacade: Persistence layer abstraction
 
-### Key Components
+### Key Components 🔑
 
 **Presentation Layer**
 - RESTServices: API endpoints for users, places, reviews, and amenities
@@ -61,18 +61,17 @@ The architecture employs the Facade pattern at multiple levels to decouple diffe
 - DataAccess: Database operations, cache management, and validation
 - StorageFacade: Standardized CRUD interface
 
-## Domain Models
+## Domain Models 📊
 
-### Class Structure
+### Class Structure 🏷️
 ![class-diagram](<img/Class Diagram for Business Logic Layer.png>)
-
 
 The system is built around a `BaseModel` base class that provides common functionality:
 - Unique identifier management (UUID)
 - Timestamps (created_at, updated_at)
 - Utility methods (save, to_dict, str)
 
-#### Core Entities
+#### Core Entities 🌐
 
 **User**
 - Attributes: email, password, first_name, last_name
@@ -94,9 +93,9 @@ The system is built around a `BaseModel` base class that provides common functio
 - Relationships: places
 - Key Methods: update_amenity(), get_places()
 
-## API Interaction Flows
+## API Interaction Flows 🔄
 
-### User Registration
+### User Registration 📝
 ![user-registration](<img/Sequence Diagram - User Registration Flow.png>)
 The registration process comprises:
 1. Input data validation
@@ -105,7 +104,7 @@ The registration process comprises:
 4. User account creation
 5. Registration confirmation
 
-### Place Creation
+### Place Creation 🏠
 ![place creation](<img/Sequence Diagram - Place Creation Flow.png>)
 The creation process involves several validation steps:
 1. Receiving POST request with data and token
@@ -114,7 +113,7 @@ The creation process involves several validation steps:
 4. Instance creation in database
 5. Creation confirmation (201 Created)
 
-### Review Submission
+### Review Submission 📝
 ![review-submission](<img/Sequence Diagram - Review Submission Flow.png>)
 The review creation process includes:
 1. Authentication token validation
@@ -123,7 +122,7 @@ The review creation process includes:
 4. Review creation and storage
 5. Appropriate status return
       
-### Fetching Places List
+### Fetching Places List 📋
 ![fetching-places](<img/Sequence Diagram - Fetching Places List Flow.png>)
 The place retrieval process follows a sequence of operations:
 1. Client sends GET request with filter parameters
@@ -133,15 +132,15 @@ The place retrieval process follows a sequence of operations:
 5. Response formatting and serialization
 6. Return to client with 200 OK status
 
-## Technical Considerations
+## Technical Considerations ⚙️
 
-### Security
+### Security 🔒
 - Token-based authentication
 - Systematic input validation
 - Password hashing
 - Authorization checks
 
-### Error Handling
+### Error Handling ❗
 
 | HTTP Code | Description |
 |-----------|-------------|
@@ -156,32 +155,32 @@ The place retrieval process follows a sequence of operations:
 - Explicit error messages
 - Multi-level validation
 
-### Performance
+### Performance 🚀
 - Caching via DataAccess
 - Optimized queries via QueryBuilder
 - Efficient data serialization
 
-## Implementation Notes
+## Implementation Notes 📝
 
-### Authentication Flow
+### Authentication Flow 🔑
 - Middleware-based token verification
 - Secure password handling
 - Session management
 - Access control implementation
 
-### Data Validation Strategy
+### Data Validation Strategy ✅
 - Input sanitization
 - Business rule validation
 - Data integrity checks
 - Error handling protocols
 
-### API Design Principles
+### API Design Principles 📐
 - RESTful endpoint structure
 - Consistent response formats
 - Proper status code usage
 - Rate limiting considerations
 
-## Conclusion
+## Conclusion 🏁
 
 This technical documentation provides a comprehensive view of the HBnB system's architecture and operation. 
 
@@ -193,7 +192,7 @@ The documented design patterns and architectural decisions support:
 - Security through systematic validation and authentication
 - Performance through optimized data handling
 
-## Authors
+## Authors ✍️
 
 <li> Adrien MENDES RAMOS - <a href="https://github.com/Saynez667">@Saynez667</a></li>
 <li> Benjamin RISTORD - <a href="https://github.com/jbn179">@jbn179</a></li>
