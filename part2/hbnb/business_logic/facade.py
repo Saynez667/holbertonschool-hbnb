@@ -1,11 +1,3 @@
-# hbnb/business_logic/facade.py
-
-from hbnb.persistence.in_memory_repo import InMemoryRepo
-from .user import User
-from .place import Place
-from .review import Review
-from .amenity import Amenity
-
 class HBNBFacade:
     def __init__(self):
         self.repo = InMemoryRepo()
@@ -14,18 +6,20 @@ class HBNBFacade:
         return self.repo.create(User, **kwargs)
 
     def get_user(self, user_id):
-        return self.repo.get(User, user_id)
+        user = self.repo.get(User, user_id)
+        if user:
+            user_dict = user.__dict__.copy()
+            user_dict.pop('password', None)
+            return user_dict
+        return None
 
     def update_user(self, user_id, **kwargs):
-        user = self.get_user(user_id)
+        user = self.repo.get(User, user_id)
         if user:
+            kwargs.pop('password', None)  # Ne pas mettre à jour le mot de passe via cette méthode
             return self.repo.update(user, **kwargs)
         return None
 
-    def delete_user(self, user_id):
-        return self.repo.delete(User, user_id)
-
     def list_users(self):
-        return self.repo.list(User)
-
-    # Implémentez des méthodes similaires pour Place, Review et Amenity
+        users = self.repo.list(User)
+        return [{k: v for k, v in user.__dict__.items() if k != 'password'} for user in users]
