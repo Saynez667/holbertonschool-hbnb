@@ -1,180 +1,173 @@
-# HBNB API Documentation
+# 🌟 HBnB - Part 3: Authentication & Database Integration  
 
-## 📁 Project Structure
+## 🔥 Main Objectives  
+✅ Secure the API with **JWT (JSON Web Token)**  
+✅ Implement **role-based access control (admin/user)**  
+✅ Switch from in-memory storage to **SQLite (dev) / MySQL (prod)**  
+✅ Ensure data persistence using **SQLAlchemy**  
+✅ Design a **clear database schema** with **mermaid.js**  
+
+---  
+
+## 🏗️ Project Structure  
 ```bash
-hbnb-2/
+hbnb-3/
 ├── app/
-│   ├── __init__.py           # App initialization and configuration
+│   ├── __init__.py         # App initialization
 │   ├── api/
-│   │   └── v1/              # API endpoints 
-│   │       ├── amenities.py
-│   │       ├── places.py
-│   │       ├── reviews.py
-│   │       └── users.py
-│   ├── models/              # Data models
-│   │   ├── amenity.py
-│   │   ├── base_model.py
-│   │   ├── place.py
-│   │   ├── review.py
-│   │   └── user.py
-│   ├── persistence/         # Data storage
-│   │   └── repository.py
-│   └── services/           # Business logic
-│       ├── facade.py
-│       └── test.py
-├── config.py               # Configuration settings
-├── run.py                 # Application entry point
-└── requirements.txt       # Project dependencies
-```
+│   │   ├── v1/             # API endpoints
+│   │   │   ├── auth.py     # JWT authentication
+│   │   │   ├── users.py    # User management
+│   │   │   ├── places.py   # Places management
+│   │   │   ├── reviews.py  # Reviews management
+│   │   │   └── amenities.py # Amenities management
+│   ├── models/             # SQLAlchemy models
+│   │   ├── base_model.py   # Base model
+│   │   ├── user.py         # User model
+│   │   ├── place.py        # Place model
+│   │   ├── review.py       # Review model
+│   │   └── amenity.py      # Amenity model
+│   ├── security/           # API security
+│   │   ├── jwt_manager.py  # JWT token handling
+│   │   ├── password_utils.py # Password hashing
+│   └── db/                 # Database
+│       ├── setup.py        # SQLite / MySQL setup
+│       ├── migrations/     # SQLAlchemy migrations
+├── config.py               # Environment configurations
+├── run.py                  # Start the application
+└── requirements.txt        # Dependencies
+```  
 
-## 🚀 Installation & Setup
+---  
 
-1. Create and activate virtual environment:
+## 🚀 Installation & Setup  
+
+1️⃣ **Create a virtual environment**  
 ```bash
 python3 -m venv env
-source env/bin/activate
-```
+source env/bin/activate  # (Windows: env\Scripts\activate)
+```  
 
-2. Install dependencies:
+2️⃣ **Install dependencies**  
 ```bash
 pip install -r requirements.txt
-```
+```  
 
-3. Run the application:
+3️⃣ **Run the application**  
 ```bash
 python3 run.py
-```
+```  
+🔗 API available at `http://127.0.0.1:5000`  
 
-The API will be available at `http://127.0.0.1:5000`
+---  
 
-## ⚙️ Configuration
+## 🔑 JWT Authentication  
+📌 **Login Process:**  
 
-The application supports different environments through `config.py`:
+1. **Register a new user** (`/api/v1/auth/register`)  
+2. **Login** (`/api/v1/auth/login`) → Get a **JWT token**  
+3. **Use this token** to access protected endpoints  
 
-- Development (default): Debug mode enabled
-- Testing: For running tests
-- Production: For deployment
+🛡️ **Example JWT usage**:  
+```http
+GET /api/v1/users/
+Authorization: Bearer <your_token_here>
+```  
 
-To change environment:
+---  
+
+## 🛢️ Database: SQLite (Dev) → MySQL (Prod)  
+📌 **Switching between databases**  
+
+1️⃣ **Development Mode (SQLite)**  
+```python
+SQLALCHEMY_DATABASE_URI = 'sqlite:///hbnb_dev.db'
+```  
+
+2️⃣ **Production Mode (MySQL)**  
+```python
+SQLALCHEMY_DATABASE_URI = 'mysql://user:password@localhost/hbnb_prod'
+```  
+
+📌 **Apply migrations**  
 ```bash
-export FLASK_ENV=development  # or testing/production
-```
+flask db init    # Initialize
+flask db migrate # Generate migrations
+flask db upgrade # Apply changes
+```  
 
-## 🧪 API Testing Documentation
+---  
 
-### Manual Test Cases
+## 📊 Database Schema  
 
-| Endpoint | Method | Test Data | Expected | Status |
-|----------|--------|-----------|-----------|---------|
-| `/api/v1/users/` | POST | `{"first_name": "John", "last_name": "Doe", "email": "john@example.com"}` | 201 | ✅ |
-| `/api/v1/places/` | POST | `{"title": "Cozy Cabin", "price": 100, "latitude": 40.7128, "longitude": -74.0060}` | 201 | ✅ |
-| `/api/v1/reviews/` | POST | `{"text": "Great!", "rating": 5, "place_id": "uuid", "user_id": "uuid"}` | 201 | ✅ |
-| `/api/v1/amenities/` | POST | `{"name": "WiFi"}` | 201 | ✅ |
+```mermaid
+erDiagram
+    USER {
+        string id PK
+        string first_name
+        string last_name
+        string email UNIQUE
+        string password_hash
+        boolean is_admin
+    }
+    
+    PLACE {
+        string id PK
+        string title
+        float price
+        float latitude
+        float longitude
+        string user_id FK
+    }
+    
+    REVIEW {
+        string id PK
+        string text
+        int rating
+        string user_id FK
+        string place_id FK
+    }
+    
+    AMENITY {
+        string id PK
+        string name
+    }
+    
+    USER ||--o{ PLACE : owns
+    USER ||--o{ REVIEW : writes
+    PLACE ||--o{ REVIEW : receives
+    PLACE ||--o{ AMENITY : has
+```  
 
-### Running Tests
+---  
+
+## ✅ Validation Rules  
+
+### **User Model**  
+✔️ **Unique & valid email**  
+✔️ **Password hashed** (bcrypt)  
+
+### **Place Model**  
+✔️ **Price must be positive**  
+✔️ **Valid latitude & longitude**  
+
+### **Review Model**  
+✔️ **Text is required**  
+✔️ **Rating must be between 1 and 5**  
+
+---  
+
+## 🔍 Testing the API  
+
+📌 **Test with `curl`**  
 ```bash
-python3 -m unittest discover tests
-```
+curl -X POST http://127.0.0.1:5000/api/v1/auth/login -d '{"email":"test@example.com", "password":"1234"}' -H "Content-Type: application/json"
+```  
 
-### Example Test Cases
+📌 **Test with Postman**  
+1. Import API routes  
+2. Add **JWT token** in **Authorization**  
+3. Test **GET / POST / PUT / DELETE** requests  
 
-#### User Creation Test
-```python
-def test_create_user(self):
-    response = self.client.post('/api/v1/users/', json={
-        "first_name": "Jane",
-        "last_name": "Doe",
-        "email": "jane@example.com"
-    })
-    self.assertEqual(response.status_code, 201)
-```
+---  
 
-#### Place Creation Test
-```python
-def test_create_place(self):
-    response = self.client.post('/api/v1/places/', json={
-        "title": "Mountain View",
-        "price": 150.0,
-        "latitude": 37.7749,
-        "longitude": -122.4194
-    })
-    self.assertEqual(response.status_code, 201)
-```
-
-#### Review Creation Test
-```python
-def test_create_review(self):
-    response = self.client.post('/api/v1/reviews/', json={
-        "text": "Amazing place!",
-        "rating": 5,
-        "place_id": "place-uuid",
-        "user_id": "user-uuid"
-    })
-    self.assertEqual(response.status_code, 201)
-```
-
-## 🚀 API Endpoints
-
-### Users API
-- `POST /api/v1/users/`: Create new user
-- `GET /api/v1/users/`: List all users
-- `GET /api/v1/users/<id>`: Get specific user
-- `PUT /api/v1/users/<id>`: Update user
-
-### Places API
-- `POST /api/v1/places/`: Create new place
-- `GET /api/v1/places/`: List all places
-- `GET /api/v1/places/<id>`: Get specific place
-- `PUT /api/v1/places/<id>`: Update place
-
-### Reviews API
-- `POST /api/v1/reviews/`: Create new review
-- `GET /api/v1/reviews/`: List all reviews
-- `GET /api/v1/reviews/<id>`: Get specific review
-- `PUT /api/v1/reviews/<id>`: Update review
-
-### Amenities API
-- `POST /api/v1/amenities/`: Create new amenity
-- `GET /api/v1/amenities/`: List all amenities
-- `GET /api/v1/amenities/<id>`: Get specific amenity
-- `PUT /api/v1/amenities/<id>`: Update amenity
-
-## 📊 Response Formats
-
-### Success Response
-```json
-{
-    "id": "uuid",
-    "created_at": "timestamp",
-    "updated_at": "timestamp",
-    ...resource specific fields...
-}
-```
-
-### Error Response
-```json
-{
-    "error": "Error message"
-}
-```
-
-## 🔑 Model Validation Rules
-
-### User Model
-- First name and last name cannot be empty
-- Valid email format required
-
-### Place Model
-- Title cannot be empty
-- Price must be positive
-- Latitude must be between -90 and 90
-- Longitude must be between -180 and 180
-
-### Review Model
-- Text cannot be empty
-- Rating must be between 1 and 5
-- Valid user_id and place_id required
-
-### Amenity Model
-- Name cannot be empty
-- Name must be between 1 and 50 characters
