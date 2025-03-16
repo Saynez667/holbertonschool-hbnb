@@ -4,12 +4,13 @@ from datetime import datetime
 
 api = Namespace('places', description='Place operations')
 
-# Define the models for related entities
+# Model for amenities
 amenity_model = api.model('PlaceAmenity', {
     'id': fields.String(description='Amenity ID'),
     'name': fields.String(description='Name of the amenity')
 })
 
+# Model for user information
 user_model = api.model('PlaceUser', {
     'id': fields.String(description='User ID'),
     'first_name': fields.String(description='First name of the owner'),
@@ -17,7 +18,7 @@ user_model = api.model('PlaceUser', {
     'email': fields.String(description='Email of the owner')
 })
 
-# Define the place model for input validation and documentation
+# Model for place input and validation
 place_model = api.model('Place', {
     'title': fields.String(required=True, description='Title of the place'),
     'description': fields.String(description='Description of the place'),
@@ -28,7 +29,17 @@ place_model = api.model('Place', {
     'amenities': fields.List(fields.String, description="List of amenities ID's")
 })
 
-# Model for detailed place response including relationships
+# Model for reviews
+review_model = api.model('PlaceReview', {
+    'id': fields.String(description='Review ID'),
+    'text': fields.String(description='Text of the review'),
+    'rating': fields.Integer(description='Rating of the place (1-5)'),
+    'user_id': fields.String(description='ID of the user'),
+    'created_at': fields.String(description='Creation timestamp'),
+    'updated_at': fields.String(description='Last update timestamp')
+})
+
+# Model for detailed place response including owner, amenities, and reviews
 place_detail_model = api.model('PlaceDetail', {
     'id': fields.String(description='Place ID'),
     'title': fields.String(description='Title of the place'),
@@ -38,6 +49,7 @@ place_detail_model = api.model('PlaceDetail', {
     'longitude': fields.Float(description='Longitude of the place'),
     'owner': fields.Nested(user_model, description='Owner details'),
     'amenities': fields.List(fields.Nested(amenity_model), description='List of amenities'),
+    'reviews': fields.List(fields.Nested(review_model), description='List of reviews'),
     'created_at': fields.String(description='Creation timestamp'),
     'updated_at': fields.String(description='Last update timestamp')
 })
@@ -52,7 +64,6 @@ class PlaceList(Resource):
         try:
             place_data = api.payload
             new_place = facade.create_place(place_data)
-            
             return {
                 'id': new_place.id,
                 'title': new_place.title,
@@ -98,10 +109,8 @@ class PlaceResource(Resource):
         try:
             place_data = api.payload
             updated_place = facade.update_place(place_id, place_data)
-            
             if not updated_place:
                 return {'error': 'Place not found'}, 404
-                
             return {
                 'id': updated_place.id,
                 'title': updated_place.title,
@@ -115,31 +124,6 @@ class PlaceResource(Resource):
         except ValueError as e:
             return {'error': str(e)}, 400
 
-# Adding the review model
-review_model = api.model('PlaceReview', {
-    'id': fields.String(description='Review ID'),
-    'text': fields.String(description='Text of the review'),
-    'rating': fields.Integer(description='Rating of the place (1-5)'),
-    'user_id': fields.String(description='ID of the user'),
-    'created_at': fields.String(description='Creation timestamp'),
-    'updated_at': fields.String(description='Last update timestamp')
-})
-
-# Update the place_detail_model to include reviews
-place_detail_model = api.model('PlaceDetail', {
-    'id': fields.String(description='Place ID'),
-    'title': fields.String(description='Title of the place'),
-    'description': fields.String(description='Description of the place'),
-    'price': fields.Float(description='Price per night'),
-    'latitude': fields.Float(description='Latitude of the place'),
-    'longitude': fields.Float(description='Longitude of the place'),
-    'owner': fields.Nested(user_model, description='Owner details'),
-    'amenities': fields.List(fields.Nested(amenity_model), description='List of amenities'),
-    'reviews': fields.List(fields.Nested(review_model), description='List of reviews'),
-    'created_at': fields.String(description='Creation timestamp'),
-    'updated_at': fields.String(description='Last update timestamp')
-})
-
 @api.route('/<string:place_id>/reviews')
 @api.param('place_id', 'The place identifier')
 class PlaceReviewList(Resource):
@@ -151,7 +135,7 @@ class PlaceReviewList(Resource):
         if reviews is None:
             return {'error': 'Place not found'}, 404
 
-        # Convertir les objets datetime en chaînes pour la sérialisation     
+        # Convert datetime objects to string for serialization
         return [{
             'id': review.id,
             'text': review.text,

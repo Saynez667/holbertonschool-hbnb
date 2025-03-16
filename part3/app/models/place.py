@@ -1,25 +1,59 @@
 from app.models.base_model import BaseModel
+from .user import User
 
 class Place(BaseModel):
-    def __init__(self, title, description, price, latitude, longitude, owner_id, amenities=None, **kwargs):
+    """Class representing a rental place
+
+    Attributes:
+        title (str): The title of the place (max 100 characters)
+        description (str): Detailed description of the place
+        price (float): Price per night (must be positive)
+        latitude (float): Latitude coordinate (-90.0 to 90.0)
+        longitude (float): Longitude coordinate (-180.0 to 180.0)
+        owner (User): User instance of who owns the place
+        amenities (list): List of amenities associated with the place
+        reviews (list): List of reviews for the place
+    """
+
+    def __init__(self, title, owner, description="", price=0.0, latitude=0.0, longitude=0.0, amenities=None, **kwargs):
+        """Initialize a new Place
+
+        Args:
+            title (str): Place title (required)
+            owner (User): User instance of who owns the place
+            description (str): Detailed description of the place
+            price (float): Price per night
+            latitude (float): Geographic latitude
+            longitude (float): Geographic longitude
+            amenities (list): List of amenities
+        """
         super().__init__(**kwargs)
+
         self.title = self._validate_string(title, "Title", 100)
+        self.validate_owner(owner)
         self.description = self._validate_string(description, "Description", 1000)
-        self._price = 0
         self.price = price
-        self._latitude = 0
         self.latitude = latitude
-        self._longitude = 0
         self.longitude = longitude
-        self.owner_id = owner_id
+        self.owner = owner
         self.amenities = amenities if amenities else []
+        self.reviews = []
 
     def _validate_string(self, value, field_name, max_length):
+        """Validate string fields like title and description"""
         if not isinstance(value, str) or len(value.strip()) == 0:
             raise ValueError(f"{field_name} is required and must be a non-empty string")
         if len(value) > max_length:
             raise ValueError(f"{field_name} must be at most {max_length} characters long")
         return value.strip()
+
+    @staticmethod
+    def validate_owner(owner):
+        """Validate that the owner is a User instance"""
+        if not owner:
+            raise ValueError("Place must have an owner")
+        if not isinstance(owner, User):
+            raise TypeError("Owner must be a User instance")
 
     @property
     def price(self):
@@ -57,7 +91,18 @@ class Place(BaseModel):
             raise ValueError("Longitude must be between -180 and 180")
         self._longitude = float(value)
 
+    def add_amenity(self, amenity):
+        """Add an amenity to the place"""
+        if amenity not in self.amenities:
+            self.amenities.append(amenity)
+
+    def add_review(self, review):
+        """Add a review to the place"""
+        if review not in self.reviews:
+            self.reviews.append(review)
+
     def update(self, data):
+        """Update place attributes from a dictionary"""
         if 'title' in data:
             self.title = self._validate_string(data['title'], "Title", 100)
         if 'description' in data:
@@ -73,3 +118,17 @@ class Place(BaseModel):
         if 'amenities' in data:
             self.amenities = data['amenities']
         super().update(data)
+
+    def to_dict(self):
+        """Convert place to dictionary"""
+        place_dict = super().to_dict()
+        place_dict.update({
+            'title': self.title,
+            'description': self.description,
+            'price': self.price,
+            'latitude': self.latitude,
+            'longitude': self.longitude,
+            'owner_id': self.owner.id if self.owner else None,
+            'amenities': [amenity.id for amenity in self.amenities] if self.amenities else []
+        })
+        return place_dict

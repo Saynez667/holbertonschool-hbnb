@@ -4,12 +4,23 @@ from datetime import datetime
 
 api = Namespace('reviews', description='Review operations')
 
-# Define the review model for input validation and documentation
+# Model for input validation and documentation
 review_model = api.model('Review', {
     'text': fields.String(required=True, description='Text of the review'),
     'rating': fields.Integer(required=True, description='Rating of the place (1-5)'),
-    'user_id': fields.String(required=True, description='ID of the user'),
-    'place_id': fields.String(required=True, description='ID of the place')
+    'user_id': fields.String(required=True, description="User's ID"),
+    'place_id': fields.String(required=True, description="Place's ID")
+})
+
+# Model for detailed review information
+review_output_model = api.model('ReviewOutput', {
+    'id': fields.String(description='Review ID'),
+    'text': fields.String(description='Text of the review'),
+    'rating': fields.Integer(description='Rating of the place (1-5)'),
+    'user_id': fields.String(description="User's ID"),
+    'place_id': fields.String(description="Place's ID"),
+    'created_at': fields.String(description='Timestamp when the review was created'),
+    'updated_at': fields.String(description='Timestamp when the review was last updated')
 })
 
 @api.route('/')
@@ -18,11 +29,11 @@ class ReviewList(Resource):
     @api.response(201, 'Review successfully created')
     @api.response(400, 'Invalid input data')
     def post(self):
-        """Register a new review"""
+        """Create a new review"""
         try:
             review_data = api.payload
             new_review = facade.create_review(review_data)
-            
+
             return {
                 'id': new_review.id,
                 'text': new_review.text,
@@ -39,13 +50,15 @@ class ReviewList(Resource):
     def get(self):
         """Retrieve a list of all reviews"""
         reviews = facade.get_all_reviews()
-        return [{
-            'id': review.id,
-            'text': review.text,
-            'rating': review.rating,
-            'created_at': review.created_at.isoformat() if isinstance(review.created_at, datetime) else str(review.created_at),
-            'updated_at': review.updated_at.isoformat() if isinstance(review.updated_at, datetime) else str(review.updated_at)
-        } for review in reviews], 200
+        return [
+            {
+                'id': review.id,
+                'text': review.text,
+                'rating': review.rating,
+                'created_at': review.created_at.isoformat() if isinstance(review.created_at, datetime) else str(review.created_at),
+                'updated_at': review.updated_at.isoformat() if isinstance(review.updated_at, datetime) else str(review.updated_at)
+            } for review in reviews
+        ], 200
 
 @api.route('/<string:review_id>')
 @api.param('review_id', 'The review identifier')
@@ -57,7 +70,7 @@ class ReviewResource(Resource):
         review = facade.get_review(review_id)
         if not review:
             return {'error': 'Review not found'}, 404
-            
+
         return {
             'id': review.id,
             'text': review.text,
@@ -77,10 +90,10 @@ class ReviewResource(Resource):
         try:
             review_data = api.payload
             updated_review = facade.update_review(review_id, review_data)
-            
+
             if not updated_review:
                 return {'error': 'Review not found'}, 404
-                
+
             return {
                 'id': updated_review.id,
                 'text': updated_review.text,
@@ -101,4 +114,3 @@ class ReviewResource(Resource):
         if not success:
             return {'error': 'Review not found'}, 404
         return {'message': 'Review deleted successfully'}, 200
-
