@@ -157,11 +157,6 @@ erDiagram
         string user_id FK
         string place_id FK
     }
-    
-    USER ||--o{ PLACE : owns
-    USER ||--o{ REVIEW : writes
-    PLACE ||--o{ REVIEW : receives
-    PLACE ||--o{ AMENITY : has
 ```  
 
 ---  
