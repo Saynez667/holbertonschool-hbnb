@@ -15,7 +15,7 @@ class UserCreationTestCase(unittest.TestCase):
         self.app_context.pop()
 
     def test_user_creation(self):
-        user = User(first_name='John', last_name='Doe', email='David@shlomo.com', password='password')
+        user = User(first_name='David', last_name='Shlomo', email='David@shlomo.com', password='password')
         db.session.add(user)
         db.session.commit()
         self.assertIsNotNone(User.query.filter_by(email='David@shlomo.com').first())
