@@ -1,6 +1,9 @@
 from abc import ABC, abstractmethod
+from app import db
 
 class Repository(ABC):
+    """Interface abstraite pour tous les repositories"""
+    
     @abstractmethod
     def add(self, obj):
         pass
@@ -25,35 +28,34 @@ class Repository(ABC):
     def get_by_attribute(self, attr_name, attr_value):
         pass
 
-
-class InMemoryRepository(Repository):
-    def __init__(self):
-        self._storage = {}
+class SQLAlchemyRepository(Repository):
+    """Implémentation concrète pour SQLAlchemy"""
+    
+    def __init__(self, model):
+        self.model = model  # Modèle SQLAlchemy à injecter
 
     def add(self, obj):
-        self._storage[obj.id] = obj
+        db.session.add(obj)
+        db.session.commit()
 
     def get(self, obj_id):
-        return self._storage.get(obj_id)
+        return self.model.query.get(obj_id)
 
     def get_all(self):
-        return list(self._storage.values())
+        return self.model.query.all()
 
     def update(self, obj_id, data):
         obj = self.get(obj_id)
         if obj:
-            obj.update(data)
+            for key, value in data.items():
+                setattr(obj, key, value)
+            db.session.commit()
 
     def delete(self, obj_id):
-        if obj_id in self._storage:
-            del self._storage[obj_id]
-            return True
-        return False
+        obj = self.get(obj_id)
+        if obj:
+            db.session.delete(obj)
+            db.session.commit()
 
     def get_by_attribute(self, attr_name, attr_value):
-        return next((obj for obj in self._storage.values() if getattr(obj, attr_name) == attr_value), None)
-
-    def get_by_email(self, email):
-        return self.get_by_attribute('email', email)
-    
-    
+        return self.model.query.filter_by(**{attr_name: attr_value}).first()

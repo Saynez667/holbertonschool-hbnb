@@ -1,35 +1,45 @@
-from app.models.base_model import BaseModel
+from app import db
+from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy.orm import validates
 import re
 
-class User(BaseModel):
-    def __init__(self, first_name, last_name, email, is_admin=False):
-        super().__init__()
-        self.first_name = self._validate_string(first_name, "First name", 50)
-        self.last_name = self._validate_string(last_name, "Last name", 50)
-        self.email = self._validate_email(email)
-        self.is_admin = is_admin
+class User(db.Model):
+    """User model"""
+    __tablename__ = 'users'  # Nom de la table
 
-    def _validate_string(self, value, field_name, max_length):
-        if not isinstance(value, str) or len(value.strip()) == 0:
-            raise ValueError(f"{field_name} is required and must be a non-empty string")
-        if len(value) > max_length:
-            raise ValueError(f"{field_name} must be at most {max_length} characters long")
-        return value.strip()
+    id = Column(Integer, primary_key=True)
+    first_name = Column(String(50), nullable=False)
+    last_name = Column(String(50), nullable=False)
+    email = Column(String(120), unique=True, nullable=False)
+    is_admin = Column(Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=db.func.now())
+    updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
 
-    def _validate_email(self, email):
-        if not isinstance(email, str) or len(email.strip()) == 0:
-            raise ValueError("Email is required and must be a non-empty string")
-        email = email.strip().lower()
-        email_regex = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
-        if not email_regex.match(email):
-            raise ValueError("Invalid email format")
+    def __repr__(self):
+        return f'<User id={self.id} email={self.email}>'
+
+    @validates('first_name')
+    def validate_first_name(self, key, first_name):
+        if not first_name:
+            raise ValueError('First name is required')
+        if len(first_name) > 50:
+            raise ValueError('First name must be at most 50 characters')
+        return first_name
+
+    @validates('last_name')
+    def validate_last_name(self, key, last_name):
+        if not last_name:
+            raise ValueError('Last name is required')
+        if len(last_name) > 50:
+            raise ValueError('Last name must be at most 50 characters')
+        return last_name
+
+    @validates('email')
+    def validate_email(self, key, email):
+        if not email:
+            raise ValueError('Email is required')
+        if len(email) > 120:
+            raise ValueError('Email must be at most 120 characters')
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            raise ValueError('Invalid email format')
         return email
-
-    def update(self, data):
-        if 'first_name' in data:
-            self.first_name = self._validate_string(data['first_name'], "First name", 50)
-        if 'last_name' in data:
-            self.last_name = self._validate_string(data['last_name'], "Last name", 50)
-        if 'email' in data:
-            self.email = self._validate_email(data['email'])
-        super().update(data)

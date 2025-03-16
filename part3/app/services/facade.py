@@ -1,17 +1,18 @@
-from app.persistence.repository import InMemoryRepository
+from app.persistence.repository import SQLAlchemyRepository
 from app.models.user import User
 from app.models.amenity import Amenity
 from app.models.place import Place
 from app.models.review import Review
+from app import db  # Importez l'instance db
 
 class HBnBFacade:
     def __init__(self):
-        self.user_repo = InMemoryRepository()
-        self.place_repo = InMemoryRepository()
-        self.review_repo = InMemoryRepository()
-        self.amenity_repo = InMemoryRepository()
+        self.user_repo = SQLAlchemyRepository(User)
+        self.place_repo = SQLAlchemyRepository(Place)
+        self.review_repo = SQLAlchemyRepository(Review)
+        self.amenity_repo = SQLAlchemyRepository(Amenity)
 
-# User methods
+    # User methods
     def create_user(self, user_data):
         user = User(**user_data)
         self.user_repo.add(user)
@@ -30,10 +31,12 @@ class HBnBFacade:
         user = self.get_user(user_id)
         if not user:
             return None
-        self.user_repo.update(user_id, user_data)
+        for key, value in user_data.items():
+            setattr(user, key, value)
+        db.session.commit()  # Utilisez db.session.commit() pour persister
         return self.get_user(user_id)
 
-# Amenities methods
+    # Amenities methods
     def create_amenity(self, amenity_data):
         amenity = Amenity(**amenity_data)
         self.amenity_repo.add(amenity)
@@ -49,15 +52,17 @@ class HBnBFacade:
         amenity = self.get_amenity(amenity_id)
         if not amenity:
             return None
-        self.amenity_repo.update(amenity_id, amenity_data)
+        for key, value in amenity_data.items():
+            setattr(amenity, key, value)
+        db.session.commit()  # Utilisez db.session.commit() pour persister
         return self.get_amenity(amenity_id)
     
-# Place methods
+    # Place methods
     def create_place(self, place_data):
         """
         Creates a new place after validating owner and amenities
         """
-    # Debug
+        # Debug
         print(f"Creating place with data: {place_data}")
     
         # Validate owner exists
@@ -123,8 +128,9 @@ class HBnBFacade:
                 valid_amenities.append(amenity_id)
             place_data['amenities'] = valid_amenities
     
-        # Update place
-        self.place_repo.update(place_id, place_data)
+        for key, value in place_data.items():
+            setattr(place, key, value)
+        db.session.commit()  # Utilisez db.session.commit() pour persister
         return self.get_place(place_id)
 
     def get_place_with_details(self, place_id):
@@ -170,7 +176,7 @@ class HBnBFacade:
             'updated_at': place.updated_at
         }
     
-# Review methods
+    # Review methods
     def create_review(self, review_data):
         """
         Creates a new review after validating user_id, place_id, and rating
@@ -235,8 +241,9 @@ class HBnBFacade:
             if not place:
                 raise ValueError(f"Place with ID {review_data.get('place_id')} does not exist")
         
-        # Update review
-        self.review_repo.update(review_id, review_data)
+        for key, value in review_data.items():
+            setattr(review, key, value)
+        db.session.commit()  # Utilisez db.session.commit() pour persister
         return self.get_review(review_id)
 
     def delete_review(self, review_id):
