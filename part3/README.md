@@ -102,35 +102,60 @@ flask db upgrade # Apply changes
 
 ```mermaid
 erDiagram
-    USER {
+    User ||--o{ Place : owns
+    User ||--o{ Review : writes
+    User ||--o{ Booking : makes
+    Place ||--o{ Review : receives
+    Place ||--o{ Booking : receives
+    Place }o--o{ Amenity : has
+    Place_Amenity }|--|| Place : contains
+    Place_Amenity }|--|| Amenity : contains
+
+    User {
         string id PK
         string first_name
         string last_name
-        string email UNIQUE
-        string password_hash
+        string email
+        string password
         boolean is_admin
     }
-    
-    PLACE {
+
+    Place {
         string id PK
         string title
+        string description
         float price
         float latitude
         float longitude
-        string user_id FK
+        string owner_id FK
     }
-    
-    REVIEW {
+
+    Review {
         string id PK
         string text
         int rating
         string user_id FK
         string place_id FK
     }
-    
-    AMENITY {
+
+    Amenity {
         string id PK
         string name
+    }
+
+    Place_Amenity {
+        string place_id PK,FK
+        string amenity_id PK,FK
+    }
+
+    Booking {
+        string id PK
+        date check_in
+        date check_out
+        string status
+        float total_price
+        string user_id FK
+        string place_id FK
     }
     
     USER ||--o{ PLACE : owns
