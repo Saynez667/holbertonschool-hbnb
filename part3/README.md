@@ -191,3 +191,6 @@ curl -X POST http://127.0.0.1:5000/api/v1/auth/login -d '{"email":"test@example.
 
 ---  
 
+## Authors 
+- [Saynez667](https://github.com/Saynez667)
+- [ni-mdj](https://github.com/ni-mdj)
