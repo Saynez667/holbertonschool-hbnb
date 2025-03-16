@@ -18,7 +18,7 @@ class UserCreationTestCase(unittest.TestCase):
         user = User(first_name='John', last_name='Doe', email='David@shlomo.com', password='password')
         db.session.add(user)
         db.session.commit()
-        self.assertIsNotNone(User.query.filter_by(email='john@shlomo.com').first())
+        self.assertIsNotNone(User.query.filter_by(email='David@shlomo.com').first())
 
 if __name__ == '__main__':
     unittest.main()
